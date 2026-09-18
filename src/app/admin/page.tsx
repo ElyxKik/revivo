@@ -210,7 +210,7 @@ export default function AdminPage() {
         <div className="flex h-16 items-center border-b border-zinc-200 px-6 dark:border-zinc-800">
           <div className="flex items-center gap-2 font-semibold">
             <ShieldCheck className="h-5 w-5 text-indigo-600 dark:text-indigo-400" />
-            <span>Zecleaner Admin</span>
+            <span>Revivo Admin</span>
           </div>
         </div>
 
@@ -242,7 +242,7 @@ export default function AdminPage() {
       <main className="flex-1 md:ml-64">
         {/* Mobile Header (visible only on small screens) */}
         <div className="flex h-16 items-center justify-between border-b border-zinc-200 bg-white px-4 dark:border-zinc-800 dark:bg-zinc-950 md:hidden">
-            <span className="font-semibold">Zecleaner Admin</span>
+            <span className="font-semibold">Revivo Admin</span>
             <button onClick={() => supabase.auth.signOut()}>
                 <LogOut className="h-5 w-5" />
             </button>

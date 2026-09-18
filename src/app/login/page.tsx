@@ -50,7 +50,7 @@ function LoginForm() {
         </div>
         <h1 className="mt-6 text-2xl font-bold tracking-tight">Welcome back</h1>
         <p className="mt-2 text-sm text-zinc-600 dark:text-zinc-400">
-          Sign in to access the Zecleaner admin console.
+          Sign in to access Revivo Admin.
         </p>
       </div>
 
@@ -128,5 +128,4 @@ export default function LoginPage() {
     </div>
   );
 }
-
 
