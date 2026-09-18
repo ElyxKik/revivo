@@ -1,12 +1,17 @@
 import { createHmac, timingSafeEqual } from "crypto";
 import { NextRequest, NextResponse } from "next/server";
 import { chariowRequest, getChariowPlanByProductId } from "@/lib/chariow";
-import { createPurchaseAndLicenses } from "@/lib/license";
+import { createPurchaseAndLicenses, resendPurchaseLicenseEmail } from "@/lib/license";
 import { supabaseServer } from "@/lib/supabaseServer";
 
-function validSignature(rawBody: string, received: string | null) {
+function validSignature(rawBody: string, received: string | null, token: string | null) {
   const secret = process.env.CHARIOW_WEBHOOK_SECRET;
-  if (!secret || !received) return false;
+  if (!secret) return false;
+  if (!received) {
+    const left = Buffer.from(token || "");
+    const right = Buffer.from(secret);
+    return left.length === right.length && timingSafeEqual(left, right);
+  }
   const normalized = received.replace(/^sha256=/, "");
   const expected = createHmac("sha256", secret).update(rawBody).digest("hex");
   const left = Buffer.from(normalized);
@@ -25,7 +30,7 @@ function valueAt(source: any, paths: string[][]) {
 
 export async function POST(req: NextRequest) {
   const rawBody = await req.text();
-  if (!validSignature(rawBody, req.headers.get("x-chariow-signature"))) {
+  if (!validSignature(rawBody, req.headers.get("x-chariow-signature"), req.nextUrl.searchParams.get("token"))) {
     return NextResponse.json({ error: "Invalid Chariow signature" }, { status: 401 });
   }
 
@@ -44,10 +49,13 @@ export async function POST(req: NextRequest) {
     const supabase = supabaseServer();
     const { data: existing } = await supabase
       .from("purchases")
-      .select("id")
+      .select("id, email_status")
       .eq("chariow_sale_id", saleId)
       .maybeSingle();
-    if (existing) return NextResponse.json({ ok: true, duplicate: true, purchaseId: existing.id });
+    if (existing) {
+      const email = await resendPurchaseLicenseEmail(existing.id);
+      return NextResponse.json({ ok: true, duplicate: true, purchaseId: existing.id, email });
+    }
 
     const response = await chariowRequest<any>(`/sales/${encodeURIComponent(saleId)}`);
     const sale = response?.data;
@@ -78,6 +86,8 @@ export async function POST(req: NextRequest) {
       chariowProductId: productId,
       customerDetails: sale.customer || { email },
       paymentMethod: sale.payment || null,
+      productName: sale.product?.name,
+      invoiceUrl: sale.invoice_download_url || undefined,
     });
 
     return NextResponse.json({ ok: true, ...result });

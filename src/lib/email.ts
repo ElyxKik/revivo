@@ -1,6 +1,23 @@
 import { Resend } from "resend";
 
-export async function sendLicenseEmail(args: { to: string; keys: string[]; seats: number; amountEur?: number }) {
+export type LicenseEmailArgs = {
+  to: string;
+  keys: string[];
+  seats: number;
+  amount?: number;
+  currency?: string;
+  orderId?: string;
+  productName?: string;
+  durationYears?: number;
+  validUntil?: string;
+  invoiceUrl?: string;
+};
+
+function formatMoney(amount: number, currency: string) {
+  return new Intl.NumberFormat("fr-FR", { style: "currency", currency: currency.toUpperCase() }).format(amount);
+}
+
+export async function sendLicenseEmail(args: LicenseEmailArgs & { amountEur?: number }) {
   const apiKey = process.env.RESEND_API_KEY;
   if (!apiKey) throw new Error("Missing RESEND_API_KEY");
   const resend = new Resend(apiKey);
@@ -8,11 +25,18 @@ export async function sendLicenseEmail(args: { to: string; keys: string[]; seats
 
   const subject = args.seats === 1 ? "Votre clé Zecleaner" : "Vos clés Zecleaner";
   const keysBlock = args.keys.map((k, idx) => `${idx + 1}. ${k}`).join("\n");
+  const amount = typeof args.amount === "number" ? args.amount : args.amountEur;
+  const currency = args.currency || "EUR";
+  const amountLabel = typeof amount === "number" ? formatMoney(amount, currency) : undefined;
+  const validUntilLabel = args.validUntil ? new Date(args.validUntil).toLocaleDateString("fr-FR") : undefined;
 
   const text =
     `Merci pour votre achat.\n\n` +
     `Nombre de clés: ${args.seats}\n` +
-    (typeof args.amountEur === "number" ? `Montant: ${args.amountEur} EUR\n` : "") +
+    (args.orderId ? `Commande: ${args.orderId}\n` : "") +
+    (args.productName ? `Produit: ${args.productName}\n` : "") +
+    (amountLabel ? `Montant: ${amountLabel}\n` : "") +
+    (validUntilLabel ? `Valide jusqu’au: ${validUntilLabel}\n` : "") +
     `\nClé(s):\n${keysBlock}\n`;
 
   const html = `
@@ -64,12 +88,15 @@ export async function sendLicenseEmail(args: { to: string; keys: string[]; seats
           <span class="label">Nombre de clés:</span>
           <span class="value">${args.seats}</span>
         </div>
-        ${typeof args.amountEur === "number" ? `
+        ${args.orderId ? `<div class="info-row"><span class="label">Commande:</span><span class="value">${escapeHtml(args.orderId)}</span></div>` : ""}
+        ${args.productName ? `<div class="info-row"><span class="label">Produit:</span><span class="value">${escapeHtml(args.productName)}</span></div>` : ""}
+        ${amountLabel ? `
         <div class="info-row">
           <span class="label">Montant:</span>
-          <span class="value">${args.amountEur} EUR</span>
+          <span class="value">${escapeHtml(amountLabel)}</span>
         </div>
         ` : ""}
+        ${validUntilLabel ? `<div class="info-row"><span class="label">Valide jusqu’au:</span><span class="value">${escapeHtml(validUntilLabel)}</span></div>` : ""}
       </div>
 
       <div class="section">
@@ -88,6 +115,7 @@ export async function sendLicenseEmail(args: { to: string; keys: string[]; seats
 
       <div style="text-align: center;">
         <a href="https://zecleaner.com" class="cta-button">Accéder à Zecleaner</a>
+        ${args.invoiceUrl ? `<br><a href="${escapeHtml(args.invoiceUrl)}" style="display:inline-block;margin-top:14px;color:#4f46e5;">Télécharger la facture Chariow</a>` : ""}
       </div>
 
       <div class="footer">
@@ -102,6 +130,7 @@ export async function sendLicenseEmail(args: { to: string; keys: string[]; seats
 
   const result = await resend.emails.send({ from, to: args.to, subject, html, text });
   if (result.error) throw new Error(`Resend error: ${JSON.stringify(result.error)}`);
+  return result.data;
 }
 
 export type PrivacyAlertEmailArgs = {

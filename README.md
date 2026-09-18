@@ -42,6 +42,12 @@ Le site appelle `POST /api/chariow/checkout`. Après paiement, un Pulse Chariow
 doit appeler `POST /api/chariow/webhook` avec le déclencheur
 `successful_sale`.
 
+Si le tableau de bord Chariow ne fournit pas de signature HMAC, générez un
+secret aléatoire, placez-le dans `CHARIOW_WEBHOOK_SECRET`, puis configurez le
+Pulse avec l’URL `https://votre-domaine/api/chariow/webhook?token=VOTRE_SECRET`.
+Revivo vérifie ensuite la vente directement auprès de l’API Chariow avant toute
+livraison de licence.
+
 Variables requises :
 
 - `CHARIOW_API_KEY`

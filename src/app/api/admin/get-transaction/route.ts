@@ -38,5 +38,9 @@ export async function GET(req: NextRequest) {
     providerEventId: data.provider_event_id,
     chariowSaleId: data.chariow_sale_id,
     chariowProductId: data.chariow_product_id,
+    emailStatus: data.email_status,
+    emailProviderId: data.email_provider_id,
+    emailSentAt: data.email_sent_at,
+    emailError: data.email_error,
   });
 }

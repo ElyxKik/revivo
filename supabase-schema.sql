@@ -35,6 +35,12 @@ CREATE TABLE IF NOT EXISTS purchases (
   provider_event_id TEXT,
   chariow_sale_id TEXT,
   chariow_product_id TEXT,
+  product_name TEXT,
+  invoice_url TEXT,
+  email_status TEXT NOT NULL DEFAULT 'pending',
+  email_provider_id TEXT,
+  email_sent_at TIMESTAMPTZ,
+  email_error TEXT,
   created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
@@ -61,6 +67,12 @@ CREATE TABLE IF NOT EXISTS licenses (
 ALTER TABLE purchases ADD COLUMN IF NOT EXISTS provider_event_id TEXT;
 ALTER TABLE purchases ADD COLUMN IF NOT EXISTS chariow_sale_id TEXT;
 ALTER TABLE purchases ADD COLUMN IF NOT EXISTS chariow_product_id TEXT;
+ALTER TABLE purchases ADD COLUMN IF NOT EXISTS product_name TEXT;
+ALTER TABLE purchases ADD COLUMN IF NOT EXISTS invoice_url TEXT;
+ALTER TABLE purchases ADD COLUMN IF NOT EXISTS email_status TEXT NOT NULL DEFAULT 'pending';
+ALTER TABLE purchases ADD COLUMN IF NOT EXISTS email_provider_id TEXT;
+ALTER TABLE purchases ADD COLUMN IF NOT EXISTS email_sent_at TIMESTAMPTZ;
+ALTER TABLE purchases ADD COLUMN IF NOT EXISTS email_error TEXT;
 
 CREATE INDEX IF NOT EXISTS idx_purchases_created_at ON purchases(created_at DESC);
 CREATE INDEX IF NOT EXISTS idx_purchases_email ON purchases(email);

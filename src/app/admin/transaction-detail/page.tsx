@@ -48,6 +48,10 @@ interface TransactionDetail {
   providerEventId?: string;
   chariowSaleId?: string;
   chariowProductId?: string;
+  emailStatus?: string;
+  emailProviderId?: string;
+  emailSentAt?: string;
+  emailError?: string;
 }
 
 function TransactionDetailContent() {
@@ -56,6 +60,7 @@ function TransactionDetailContent() {
   const [transaction, setTransaction] = useState<TransactionDetail | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [resending, setResending] = useState(false);
 
   useEffect(() => {
     const loadTransaction = async () => {
@@ -138,6 +143,26 @@ function TransactionDetailContent() {
 
   const getModeColor = (mode: string) => {
     return mode === "live" ? "bg-purple-500/20 text-purple-400" : "bg-orange-500/20 text-orange-400";
+  };
+
+  const resendEmail = async () => {
+    setResending(true);
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) throw new Error("Session expirée");
+      const response = await fetch("/api/admin/resend-license-email", {
+        method: "POST",
+        headers: { Authorization: `Bearer ${session.access_token}`, "Content-Type": "application/json" },
+        body: JSON.stringify({ purchaseId: transaction.id }),
+      });
+      const result = await response.json();
+      if (!response.ok) throw new Error(result.error || "Échec de l’envoi");
+      setTransaction({ ...transaction, emailStatus: "sent", emailError: undefined });
+    } catch (error: any) {
+      setTransaction({ ...transaction, emailStatus: "failed", emailError: error?.message || "Échec de l’envoi" });
+    } finally {
+      setResending(false);
+    }
   };
 
   return (
@@ -302,6 +327,18 @@ function TransactionDetailContent() {
         </div>
 
         {/* Payment provider references */}
+        <div className="bg-slate-800/50 border border-slate-700 rounded-lg p-6 mb-6">
+          <h2 className="text-xl font-bold text-white mb-4 flex items-center gap-2"><Mail className="w-5 h-5" />E-mail des licences</h2>
+          <div className="flex items-center justify-between gap-4">
+            <div>
+              <div className="text-sm text-slate-400">Statut</div>
+              <div className="text-white font-semibold capitalize">{transaction.emailStatus || "pending"}</div>
+              {transaction.emailError && <div className="mt-2 text-sm text-red-400">{transaction.emailError}</div>}
+            </div>
+            {transaction.emailStatus !== "sent" && <button type="button" disabled={resending} onClick={resendEmail} className="rounded-lg bg-indigo-600 px-4 py-2 text-sm font-semibold text-white hover:bg-indigo-500 disabled:opacity-50">{resending ? "Envoi…" : "Renvoyer l’e-mail"}</button>}
+          </div>
+        </div>
+
         <div className="bg-slate-800/50 border border-slate-700 rounded-lg p-6">
           <h2 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
             <Shield className="w-5 h-5" />
