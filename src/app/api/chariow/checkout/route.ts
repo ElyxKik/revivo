@@ -7,6 +7,8 @@ const checkoutSchema = z.object({
   email: z.string().trim().email().max(254),
   firstName: z.string().trim().min(1).max(80),
   lastName: z.string().trim().min(1).max(80),
+  phone: z.string().trim().min(6).max(25),
+  countryCode: z.string().trim().length(2).transform((value) => value.toUpperCase()),
 });
 
 export function OPTIONS(req: NextRequest) {
@@ -25,12 +27,16 @@ export async function POST(req: NextRequest) {
         email: input.email,
         first_name: input.firstName,
         last_name: input.lastName,
+        phone: {
+          number: input.phone,
+          country_code: input.countryCode,
+        },
       }),
     });
 
     const data = result?.data || {};
     const checkoutUrl = data?.payment?.checkout_url || data?.checkout_url;
-    if (data.step === "awaiting_payment" && checkoutUrl) {
+    if (["payment", "awaiting_payment"].includes(data.step) && checkoutUrl) {
       return NextResponse.json({ action: "redirect", checkoutUrl }, { headers });
     }
     if (data.step === "completed") {
