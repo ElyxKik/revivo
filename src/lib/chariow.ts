@@ -73,12 +73,18 @@ export async function chariowRequest<T>(path: string, init: RequestInit = {}): P
 }
 
 export function checkoutCorsHeaders(origin: string | null) {
-  const allowed = (process.env.CHECKOUT_ALLOWED_ORIGINS || "")
+  const configuredOrigins = (process.env.CHECKOUT_ALLOWED_ORIGINS || "")
     .split(",")
     .map((value) => value.trim().replace(/\/$/, ""))
     .filter(Boolean);
+  const allowed = new Set([
+    "https://revivo-cleaner.online",
+    "https://www.revivo-cleaner.online",
+    "http://localhost:8000",
+    ...configuredOrigins,
+  ]);
   const normalizedOrigin = origin?.replace(/\/$/, "") || "";
-  const allowOrigin = allowed.includes(normalizedOrigin) ? normalizedOrigin : allowed[0] || "";
+  const allowOrigin = allowed.has(normalizedOrigin) ? normalizedOrigin : "";
 
   return {
     ...(allowOrigin ? { "Access-Control-Allow-Origin": allowOrigin } : {}),
