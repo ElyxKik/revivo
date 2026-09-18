@@ -18,5 +18,16 @@ export async function GET(req: NextRequest) {
     .limit(limit);
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
-  return NextResponse.json({ items: data });
+  return NextResponse.json({
+    items: (data || []).map((item) => ({
+      ...item,
+      createdAt: item.created_at,
+      customerDetails: item.customer_details,
+      paymentMethod: item.payment_method,
+      stripeEventId: item.stripe_event_id,
+      providerEventId: item.provider_event_id,
+      chariowSaleId: item.chariow_sale_id,
+      chariowProductId: item.chariow_product_id,
+    })),
+  });
 }

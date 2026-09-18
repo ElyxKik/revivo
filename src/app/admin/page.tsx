@@ -34,6 +34,7 @@ type AdminState =
 
 type Purchase = {
   id: string;
+  provider?: string;
   email?: string;
   seats?: number;
   amount?: number;
@@ -368,6 +369,7 @@ function TransactionsTable({ purchases }: { purchases: Purchase[] }) {
           <tr>
             <th className="px-6 py-3 font-medium">Date</th>
             <th className="px-6 py-3 font-medium">Customer</th>
+            <th className="px-6 py-3 font-medium">Provider</th>
             <th className="px-6 py-3 font-medium">Téléphone</th>
             <th className="px-6 py-3 font-medium">Adresse</th>
             <th className="px-6 py-3 font-medium">Amount</th>
@@ -387,6 +389,7 @@ function TransactionsTable({ purchases }: { purchases: Purchase[] }) {
                 </div>
               </td>
               <td className="px-6 py-4 font-medium">{p.email || "Unknown"}</td>
+              <td className="px-6 py-4"><span className="rounded-full bg-indigo-50 px-2.5 py-1 text-xs font-semibold capitalize text-indigo-700 dark:bg-indigo-900/30 dark:text-indigo-300">{p.provider || "stripe"}</span></td>
               <td className="px-6 py-4">
                 {p.customerDetails?.phone ? (
                   <div className="flex items-center gap-1.5 text-zinc-600 dark:text-zinc-400">

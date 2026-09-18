@@ -24,5 +24,19 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: "Transaction not found" }, { status: 404 });
   }
 
-  return NextResponse.json(data);
+  return NextResponse.json({
+    ...data,
+    createdAt: data.created_at,
+    currentPeriodEnd: data.current_period_end,
+    customerDetails: data.customer_details,
+    paymentMethod: data.payment_method,
+    stripeEventId: data.stripe_event_id,
+    stripeCustomerId: data.stripe_customer_id,
+    stripeSessionId: data.stripe_session_id,
+    stripeSubscriptionId: data.stripe_subscription_id,
+    stripePaymentIntentId: data.stripe_payment_intent_id,
+    providerEventId: data.provider_event_id,
+    chariowSaleId: data.chariow_sale_id,
+    chariowProductId: data.chariow_product_id,
+  });
 }

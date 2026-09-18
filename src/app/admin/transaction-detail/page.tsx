@@ -9,6 +9,7 @@ import { ArrowLeft, Mail, Phone, MapPin, CreditCard, DollarSign, Package, User, 
 
 interface TransactionDetail {
   id: string;
+  provider?: string;
   email: string;
   seats: number;
   amount: number;
@@ -44,6 +45,9 @@ interface TransactionDetail {
   stripeSessionId?: string;
   stripeSubscriptionId?: string;
   stripePaymentIntentId?: string;
+  providerEventId?: string;
+  chariowSaleId?: string;
+  chariowProductId?: string;
 }
 
 function TransactionDetailContent() {
@@ -297,13 +301,17 @@ function TransactionDetailContent() {
           )}
         </div>
 
-        {/* Stripe IDs */}
+        {/* Payment provider references */}
         <div className="bg-slate-800/50 border border-slate-700 rounded-lg p-6">
           <h2 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
             <Shield className="w-5 h-5" />
-            Références Stripe
+            Références {transaction.provider || "stripe"}
           </h2>
           <div className="space-y-3 text-sm">
+            <div><div className="text-slate-400">Provider</div><div className="text-slate-300 font-semibold capitalize">{transaction.provider || "stripe"}</div></div>
+            {transaction.chariowSaleId && <div><div className="text-slate-400">Chariow Sale ID</div><div className="text-slate-300 font-mono break-all">{transaction.chariowSaleId}</div></div>}
+            {transaction.chariowProductId && <div><div className="text-slate-400">Chariow Product ID</div><div className="text-slate-300 font-mono break-all">{transaction.chariowProductId}</div></div>}
+            {transaction.providerEventId && <div><div className="text-slate-400">Provider Event ID</div><div className="text-slate-300 font-mono break-all">{transaction.providerEventId}</div></div>}
             {transaction.stripeEventId && (
               <div>
                 <div className="text-slate-400">Event ID</div>

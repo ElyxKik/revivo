@@ -32,6 +32,9 @@ CREATE TABLE IF NOT EXISTS purchases (
   current_period_end TIMESTAMPTZ,
   customer_details JSONB,
   payment_method JSONB,
+  provider_event_id TEXT,
+  chariow_sale_id TEXT,
+  chariow_product_id TEXT,
   created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
@@ -54,8 +57,15 @@ CREATE TABLE IF NOT EXISTS licenses (
 );
 
 -- Indexes
+-- Safe upgrade for databases created with an earlier schema version
+ALTER TABLE purchases ADD COLUMN IF NOT EXISTS provider_event_id TEXT;
+ALTER TABLE purchases ADD COLUMN IF NOT EXISTS chariow_sale_id TEXT;
+ALTER TABLE purchases ADD COLUMN IF NOT EXISTS chariow_product_id TEXT;
+
 CREATE INDEX IF NOT EXISTS idx_purchases_created_at ON purchases(created_at DESC);
 CREATE INDEX IF NOT EXISTS idx_purchases_email ON purchases(email);
+CREATE UNIQUE INDEX IF NOT EXISTS idx_purchases_chariow_sale_id ON purchases(chariow_sale_id) WHERE chariow_sale_id IS NOT NULL;
+CREATE UNIQUE INDEX IF NOT EXISTS idx_purchases_provider_event_id ON purchases(provider, provider_event_id) WHERE provider_event_id IS NOT NULL;
 CREATE INDEX IF NOT EXISTS idx_licenses_created_at ON licenses(created_at DESC);
 CREATE INDEX IF NOT EXISTS idx_licenses_email ON licenses(email);
 CREATE INDEX IF NOT EXISTS idx_licenses_key_hash ON licenses(key_hash);

@@ -18,5 +18,13 @@ export async function GET(req: NextRequest) {
     .limit(limit);
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
-  return NextResponse.json({ items: data });
+  return NextResponse.json({
+    items: (data || []).map((item) => ({
+      ...item,
+      seatIndex: item.seat_index,
+      keyHash: item.key_hash,
+      isActive: item.is_active,
+      createdAt: item.created_at,
+    })),
+  });
 }

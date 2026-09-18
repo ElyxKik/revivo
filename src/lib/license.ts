@@ -9,6 +9,7 @@ function getEncryptionKeyBase64(): string {
 }
 
 export async function createPurchaseAndLicenses(params: {
+  provider?: "stripe" | "chariow" | "manual";
   email: string;
   seats: 1 | 3;
   mode: "test" | "live";
@@ -24,6 +25,9 @@ export async function createPurchaseAndLicenses(params: {
   currentPeriodEnd?: Date;
   customerDetails?: any;
   paymentMethod?: any;
+  providerEventId?: string;
+  chariowSaleId?: string;
+  chariowProductId?: string;
 }) {
   const supabase = supabaseServer();
   const encryptionKey = getEncryptionKeyBase64();
@@ -38,7 +42,7 @@ export async function createPurchaseAndLicenses(params: {
   const { data: purchase, error: purchaseError } = await supabase
     .from("purchases")
     .insert({
-      provider: "stripe",
+      provider: params.provider || "stripe",
       mode: params.mode,
       status: "paid",
       email: params.email,
@@ -54,6 +58,9 @@ export async function createPurchaseAndLicenses(params: {
       current_period_end: params.currentPeriodEnd?.toISOString() || null,
       customer_details: params.customerDetails || null,
       payment_method: params.paymentMethod || null,
+      provider_event_id: params.providerEventId || null,
+      chariow_sale_id: params.chariowSaleId || null,
+      chariow_product_id: params.chariowProductId || null,
     })
     .select()
     .single();
@@ -77,7 +84,7 @@ export async function createPurchaseAndLicenses(params: {
       valid_until: validUntil,
       key_encrypted: keyEncrypted,
       key_hash: keyHash,
-      created_by_type: "stripe",
+      created_by_type: params.provider || "stripe",
     });
 
     keys.push(plainKey);
