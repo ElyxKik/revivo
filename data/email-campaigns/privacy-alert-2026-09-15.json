@@ -1,0 +1,210 @@
+{
+  "campaign_id": "privacy-alert-2026-09-15",
+  "name": "Alerte confidentialité Zecleaner",
+  "template": "privacy-alert",
+  "created_at": "2026-09-15T00:00:00+01:00",
+  "timezone": "Africa/Kinshasa",
+  "offer_url": "https://zecleaner.com/internet-protector.html#offres",
+  "status": "completed",
+  "completed_at": "2026-09-15T11:09:09+01:00",
+  "analysis": {
+    "confirmed": true,
+    "tracker_count": 1023,
+    "verified_findings": [
+      "Des connexions vers des services tiers susceptibles de revendre des données d’audience ont été relevées",
+      "Des traces d’activité sont présentes dans des bases publicitaires ou dans des fuites publiquement documentées"
+    ]
+  },
+  "delivery": {
+    "send_only_when_status": "pending",
+    "mark_as_sent_after_provider_confirmation": true,
+    "deduplication_key": "email",
+    "sent_count": 24,
+    "failed_count": 0,
+    "pending_count": 0
+  },
+  "recipients": [
+    {
+      "email": "44babounette@gmail.com",
+      "status": "sent",
+      "sent_at": "2026-09-15T10:08:18Z",
+      "provider_message_id": null,
+      "error": null
+    },
+    {
+      "email": "bernard_toussaint@yahoo.com",
+      "status": "sent",
+      "sent_at": "2026-09-15T10:08:19Z",
+      "provider_message_id": null,
+      "error": null
+    },
+    {
+      "email": "boulet.christina@neuf.fr",
+      "status": "sent",
+      "sent_at": "2026-09-15T10:08:20Z",
+      "provider_message_id": null,
+      "error": null
+    },
+    {
+      "email": "c.blanchard631@laposte.net",
+      "status": "sent",
+      "sent_at": "2026-09-15T10:08:20Z",
+      "provider_message_id": null,
+      "error": null
+    },
+    {
+      "email": "caro.satori.per@gmail.com",
+      "status": "sent",
+      "sent_at": "2026-09-15T10:08:21Z",
+      "provider_message_id": null,
+      "error": null
+    },
+    {
+      "email": "chrisprincesse85@hotmail.fr",
+      "status": "sent",
+      "sent_at": "2026-09-15T10:08:22Z",
+      "provider_message_id": null,
+      "error": null
+    },
+    {
+      "email": "christianebuchholz@outlook.fr",
+      "status": "sent",
+      "sent_at": "2026-09-15T10:08:23Z",
+      "provider_message_id": null,
+      "error": null
+    },
+    {
+      "email": "christophe17011992@outlook.com",
+      "status": "sent",
+      "sent_at": "2026-09-15T10:08:23Z",
+      "provider_message_id": null,
+      "error": null
+    },
+    {
+      "email": "d.denoux@laposte.net",
+      "status": "sent",
+      "sent_at": "2026-09-15T10:08:24Z",
+      "provider_message_id": null,
+      "error": null
+    },
+    {
+      "email": "dgatto125@gmail.com",
+      "status": "sent",
+      "sent_at": "2026-09-15T10:08:25Z",
+      "provider_message_id": null,
+      "error": null
+    },
+    {
+      "email": "famille46@hotmail.com",
+      "status": "sent",
+      "sent_at": "2026-09-15T10:08:25Z",
+      "provider_message_id": null,
+      "error": null
+    },
+    {
+      "email": "francoisevignau1@outlook.fr",
+      "status": "sent",
+      "sent_at": "2026-09-15T10:08:26Z",
+      "provider_message_id": null,
+      "error": null
+    },
+    {
+      "email": "isadanche@gmail.com",
+      "status": "sent",
+      "sent_at": "2026-09-15T10:08:27Z",
+      "provider_message_id": null,
+      "error": null
+    },
+    {
+      "email": "jcc.lebouquin@orange.fr",
+      "status": "sent",
+      "sent_at": "2026-09-15T10:08:27Z",
+      "provider_message_id": null,
+      "error": null
+    },
+    {
+      "email": "julien.decanis@etu.umontpellier.fr",
+      "status": "sent",
+      "sent_at": "2026-09-15T10:08:28Z",
+      "provider_message_id": null,
+      "error": null
+    },
+    {
+      "email": "kikuniely@gmail.com",
+      "status": "sent",
+      "sent_at": "2026-09-15T10:08:28Z",
+      "provider_message_id": null,
+      "error": null
+    },
+    {
+      "email": "lasserre42@hotmail.com",
+      "status": "sent",
+      "sent_at": "2026-09-15T10:08:29Z",
+      "provider_message_id": null,
+      "error": null
+    },
+    {
+      "email": "marienuage3@gmail.com",
+      "status": "sent",
+      "sent_at": "2026-09-15T10:08:29Z",
+      "provider_message_id": null,
+      "error": null
+    },
+    {
+      "email": "michel.pelletier0313@gmail.com",
+      "status": "sent",
+      "sent_at": "2026-09-15T10:08:30Z",
+      "provider_message_id": null,
+      "error": null
+    },
+    {
+      "email": "moreaupaulette51@gmail.com",
+      "status": "sent",
+      "sent_at": "2026-09-15T10:08:31Z",
+      "provider_message_id": null,
+      "error": null
+    },
+    {
+      "email": "poussard42@gmail.com",
+      "status": "sent",
+      "sent_at": "2026-09-15T10:08:31Z",
+      "provider_message_id": null,
+      "error": null
+    },
+    {
+      "email": "rodon897@outlook.com",
+      "status": "sent",
+      "sent_at": "2026-09-15T10:08:32Z",
+      "provider_message_id": null,
+      "error": null
+    },
+    {
+      "email": "tuech.michel@orange.fr",
+      "status": "sent",
+      "sent_at": "2026-09-15T10:08:32Z",
+      "provider_message_id": null,
+      "error": null
+    },
+    {
+      "email": "virginieboutt74e@gmail.com",
+      "status": "sent",
+      "sent_at": "2026-09-15T10:08:33Z",
+      "provider_message_id": null,
+      "error": null
+    }
+  ],
+  "excluded_recipients": [
+    {
+      "email": "arnaudkindina17@gmail.com",
+      "reason": "manual_exclusion"
+    },
+    {
+      "email": "business@zecleaner.com",
+      "reason": "internal_address"
+    },
+    {
+      "email": "test@zecleaner.com",
+      "reason": "test_address"
+    }
+  ]
+}
