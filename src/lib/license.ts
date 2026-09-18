@@ -56,6 +56,7 @@ export async function resendPurchaseLicenseEmail(purchaseId: string) {
 }
 
 export async function createPurchaseAndLicenses(params: {
+  existingPurchaseId?: string;
   provider?: "stripe" | "chariow" | "manual";
   email: string;
   seats: 1 | 3;
@@ -87,10 +88,7 @@ export async function createPurchaseAndLicenses(params: {
     ? params.currentPeriodEnd.toISOString()
     : new Date(Date.now() + durationYears * 365 * 24 * 60 * 60 * 1000).toISOString();
 
-  // Create purchase
-  const { data: purchase, error: purchaseError } = await supabase
-    .from("purchases")
-    .insert({
+  const purchaseValues = {
       provider: params.provider || "stripe",
       mode: params.mode,
       status: "paid",
@@ -113,9 +111,11 @@ export async function createPurchaseAndLicenses(params: {
       product_name: params.productName || null,
       invoice_url: params.invoiceUrl || null,
       email_status: "pending",
-    })
-    .select()
-    .single();
+  };
+  const purchaseQuery = params.existingPurchaseId
+    ? supabase.from("purchases").update({ ...purchaseValues, status: "paid" }).eq("id", params.existingPurchaseId)
+    : supabase.from("purchases").insert(purchaseValues);
+  const { data: purchase, error: purchaseError } = await purchaseQuery.select().single();
 
   if (purchaseError || !purchase) throw new Error(`Failed to create purchase: ${purchaseError?.message}`);
 
@@ -144,7 +144,11 @@ export async function createPurchaseAndLicenses(params: {
 
   const { error: licensesError } = await supabase.from("licenses").insert(licenseRows);
   if (licensesError) {
-    await supabase.from("purchases").delete().eq("id", purchase.id);
+    if (params.existingPurchaseId) {
+      await supabase.from("purchases").update({ status: "pending" }).eq("id", purchase.id);
+    } else {
+      await supabase.from("purchases").delete().eq("id", purchase.id);
+    }
     throw new Error(`Failed to create licenses: ${licensesError.message}`);
   }
 

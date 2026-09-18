@@ -49,10 +49,10 @@ export async function POST(req: NextRequest) {
     const supabase = supabaseServer();
     const { data: existing } = await supabase
       .from("purchases")
-      .select("id, email_status")
+      .select("id, status, email_status")
       .eq("chariow_sale_id", saleId)
       .maybeSingle();
-    if (existing) {
+    if (existing?.status === "paid") {
       const email = await resendPurchaseLicenseEmail(existing.id);
       return NextResponse.json({ ok: true, duplicate: true, purchaseId: existing.id, email });
     }
@@ -64,17 +64,20 @@ export async function POST(req: NextRequest) {
     }
 
     const productId = valueAt(sale, [["product", "id"], ["product_id"], ["items", "0", "product", "id"]]);
-    const email = valueAt(sale, [["customer", "email"], ["email"]]);
-    if (typeof productId !== "string" || typeof email !== "string") {
+    if (typeof productId !== "string") {
       return NextResponse.json({ error: "Incomplete Chariow sale" }, { status: 422 });
     }
+    if (!existing) return NextResponse.json({ error: "Missing local checkout intent" }, { status: 422 });
+    const { data: intent, error: intentError } = await supabase.from("purchases").select("*").eq("id", existing.id).single();
+    if (intentError || !intent) return NextResponse.json({ error: "Checkout intent not found" }, { status: 422 });
     const plan = getChariowPlanByProductId(productId);
     const amount = Math.round(Number(valueAt(sale, [["amount", "value"], ["payment", "amount", "value"]]) || 0));
     const currency = String(valueAt(sale, [["amount", "currency"], ["payment", "amount", "currency"]]) || "eur");
 
     const result = await createPurchaseAndLicenses({
       provider: "chariow",
-      email,
+      existingPurchaseId: intent.id,
+      email: intent.email,
       seats: plan.seats,
       mode: process.env.NODE_ENV === "production" ? "live" : "test",
       amount,
@@ -84,7 +87,7 @@ export async function POST(req: NextRequest) {
       providerEventId: String(pulse.id || pulse.event_id || "") || undefined,
       chariowSaleId: saleId,
       chariowProductId: productId,
-      customerDetails: sale.customer || { email },
+      customerDetails: intent.customer_details,
       paymentMethod: sale.payment || null,
       productName: sale.product?.name,
       invoiceUrl: sale.invoice_download_url || undefined,
