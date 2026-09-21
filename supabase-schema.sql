@@ -76,7 +76,10 @@ ALTER TABLE purchases ADD COLUMN IF NOT EXISTS email_error TEXT;
 
 CREATE INDEX IF NOT EXISTS idx_purchases_created_at ON purchases(created_at DESC);
 CREATE INDEX IF NOT EXISTS idx_purchases_email ON purchases(email);
-CREATE UNIQUE INDEX IF NOT EXISTS idx_purchases_chariow_sale_id ON purchases(chariow_sale_id) WHERE chariow_sale_id IS NOT NULL;
+-- A non-partial unique index is required by PostgREST upserts using
+-- ON CONFLICT (chariow_sale_id). PostgreSQL still permits multiple NULL values.
+DROP INDEX IF EXISTS idx_purchases_chariow_sale_id;
+CREATE UNIQUE INDEX idx_purchases_chariow_sale_id ON purchases(chariow_sale_id);
 CREATE UNIQUE INDEX IF NOT EXISTS idx_purchases_provider_event_id ON purchases(provider, provider_event_id) WHERE provider_event_id IS NOT NULL;
 CREATE INDEX IF NOT EXISTS idx_licenses_created_at ON licenses(created_at DESC);
 CREATE INDEX IF NOT EXISTS idx_licenses_email ON licenses(email);
