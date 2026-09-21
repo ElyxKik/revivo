@@ -47,7 +47,7 @@ export async function POST(req: NextRequest) {
     const saleId = data?.purchase?.id;
     if (saleId) {
       const amount = Math.round(Number(data?.purchase?.amount?.value || 0));
-      const currency = String(data?.purchase?.amount?.currency || "eur").toLowerCase();
+      const currency = String(data?.purchase?.amount?.currency || "usd").toLowerCase();
       const { error: purchaseError } = await supabaseServer().from("purchases").upsert({
         provider: "chariow",
         mode: process.env.NODE_ENV === "production" ? "live" : "test",

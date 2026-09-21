@@ -51,7 +51,7 @@ export default function PayTestPage() {
           customer_details: { email: parsed.data.email, name: parsed.data.name },
           line_items: [{ seats: parsed.data.seats, amount_eur: amountEur }],
           payment_method_details: { brand: parsed.data.brand, last4: parsed.data.last4 },
-          currency: "eur",
+          currency: "usd",
         }),
       });
 
@@ -123,8 +123,8 @@ export default function PayTestPage() {
                         value={form.seats}
                         onChange={(e) => setForm((f) => ({ ...f, seats: Number(e.target.value) as 1 | 3 }))}
                     >
-                        <option value={1}>Annual (1 License) — 69€</option>
-                        <option value={3}>Annual (3 Licenses) — 120€</option>
+                        <option value={1}>Annual (1 License) — $69</option>
+                        <option value={3}>Annual (3 Licenses) — $120</option>
                     </select>
                 </div>
 
@@ -150,7 +150,7 @@ export default function PayTestPage() {
                     disabled={loading}
                     className="w-full flex h-11 items-center justify-center gap-2 rounded-lg bg-zinc-900 font-medium text-white transition-all hover:bg-zinc-800 disabled:opacity-70 dark:bg-zinc-50 dark:text-zinc-900 dark:hover:bg-zinc-200"
                 >
-                    {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : `Simulate Purchase (${amountEur}€)`}
+                    {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : `Simulate Purchase ($${amountEur})`}
                 </button>
             </form>
         </div>
@@ -158,4 +158,3 @@ export default function PayTestPage() {
     </div>
   );
 }
-

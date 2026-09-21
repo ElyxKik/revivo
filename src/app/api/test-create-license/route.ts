@@ -47,7 +47,7 @@ export async function POST(req: NextRequest) {
 
     if (error) throw new Error(`Failed to create license: ${error.message}`);
 
-    await sendLicenseEmail({ to: email, keys: [licenseKey], seats: 1, amountEur: 0 });
+    await sendLicenseEmail({ to: email, keys: [licenseKey], seats: 1, amount: 0, currency: "usd" });
 
     return NextResponse.json({
       ok: true,

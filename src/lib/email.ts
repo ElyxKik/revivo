@@ -21,12 +21,12 @@ export async function sendLicenseEmail(args: LicenseEmailArgs & { amountEur?: nu
   const apiKey = process.env.RESEND_API_KEY;
   if (!apiKey) throw new Error("Missing RESEND_API_KEY");
   const resend = new Resend(apiKey);
-  const from = process.env.RESEND_FROM || "Zecleaner <no-reply@zecleaner.com>";
+  const from = process.env.RESEND_FROM || "Revivo <billing@email.revivo-cleaner.online>";
 
-  const subject = args.seats === 1 ? "Votre clé Zecleaner" : "Vos clés Zecleaner";
+  const subject = args.seats === 1 ? "Votre clé Revivo" : "Vos clés Revivo";
   const keysBlock = args.keys.map((k, idx) => `${idx + 1}. ${k}`).join("\n");
   const amount = typeof args.amount === "number" ? args.amount : args.amountEur;
-  const currency = args.currency || "EUR";
+  const currency = args.currency || "USD";
   const amountLabel = typeof amount === "number" ? formatMoney(amount, currency) : undefined;
   const validUntilLabel = args.validUntil ? new Date(args.validUntil).toLocaleDateString("fr-FR") : undefined;
 
@@ -47,22 +47,22 @@ export async function sendLicenseEmail(args: LicenseEmailArgs & { amountEur?: nu
   <style>
     body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; line-height: 1.6; color: #333; }
     .container { max-width: 600px; margin: 0 auto; padding: 20px; }
-    .header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 30px; border-radius: 8px 8px 0 0; text-align: center; }
+    .header { background: linear-gradient(135deg, #2563eb 0%, #0ea5e9 55%, #16a34a 100%); color: white; padding: 30px; border-radius: 8px 8px 0 0; text-align: center; }
     .logo { height: 60px; margin-bottom: 15px; }
     .header h1 { margin: 0; font-size: 28px; }
     .header p { margin: 10px 0 0 0; font-size: 16px; opacity: 0.9; }
     .content { background: #f9f9f9; padding: 30px; border-radius: 0 0 8px 8px; }
     .section { margin-bottom: 25px; }
-    .section-title { font-size: 16px; font-weight: 600; color: #667eea; margin-bottom: 10px; }
-    .keys-box { background: white; border: 2px solid #667eea; border-radius: 6px; padding: 20px; margin-top: 10px; }
-    .key-item { background: #f0f4ff; padding: 12px; margin-bottom: 10px; border-radius: 4px; font-family: 'Courier New', monospace; font-size: 13px; word-break: break-all; }
+    .section-title { font-size: 16px; font-weight: 600; color: #2563eb; margin-bottom: 10px; }
+    .keys-box { background: white; border: 2px solid #22c55e; border-radius: 6px; padding: 20px; margin-top: 10px; }
+    .key-item { background: #eff6ff; border-left: 4px solid #22c55e; padding: 12px; margin-bottom: 10px; border-radius: 4px; font-family: 'Courier New', monospace; font-size: 13px; word-break: break-all; }
     .key-item:last-child { margin-bottom: 0; }
     .info-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #eee; }
     .info-row:last-child { border-bottom: none; }
-    .label { font-weight: 600; color: #667eea; }
+    .label { font-weight: 600; color: #2563eb; }
     .value { color: #333; }
     .footer { text-align: center; padding-top: 20px; font-size: 12px; color: #999; }
-    .cta-button { display: inline-block; background: #667eea; color: white; padding: 12px 24px; border-radius: 6px; text-decoration: none; margin-top: 15px; font-weight: 600; }
+    .cta-button { display: inline-block; background: linear-gradient(135deg, #2563eb, #16a34a); color: white; padding: 12px 24px; border-radius: 6px; text-decoration: none; margin-top: 15px; font-weight: 600; }
   </style>
 </head>
 <body>
@@ -75,12 +75,12 @@ export async function sendLicenseEmail(args: LicenseEmailArgs & { amountEur?: nu
             <stop offset="100%" style="stop-color:#f0f4ff;stop-opacity:1" />
           </linearGradient>
         </defs>
-        <text x="10" y="45" font-size="40" font-weight="bold" fill="url(#logoGradient)">Zecleaner</text>
+        <text x="35" y="45" font-size="40" font-weight="bold" fill="url(#logoGradient)">Revivo</text>
       </svg>
       <p>Vos clés de licence</p>
     </div>
     <div class="content">
-      <p>Merci pour votre achat! Voici vos clés de licence Zecleaner.</p>
+      <p>Merci pour votre achat ! Voici vos clés de licence Revivo.</p>
       
       <div class="section">
         <div class="section-title">📋 Détails de votre commande</div>
@@ -109,18 +109,18 @@ export async function sendLicenseEmail(args: LicenseEmailArgs & { amountEur?: nu
       <div class="section">
         <p style="font-size: 14px; color: #666;">
           <strong>Comment utiliser vos clés?</strong><br>
-          Utilisez ces clés pour activer Zecleaner sur vos appareils. Chaque clé peut être utilisée sur un appareil à la fois.
+          Utilisez ces clés pour activer Revivo sur vos appareils. Chaque clé peut être utilisée sur un appareil à la fois.
         </p>
       </div>
 
       <div style="text-align: center;">
-        <a href="https://zecleaner.com" class="cta-button">Accéder à Zecleaner</a>
-        ${args.invoiceUrl ? `<br><a href="${escapeHtml(args.invoiceUrl)}" style="display:inline-block;margin-top:14px;color:#4f46e5;">Télécharger la facture Chariow</a>` : ""}
+        <a href="https://revivo-cleaner.online" class="cta-button">Accéder à Revivo</a>
+        ${args.invoiceUrl ? `<br><a href="${escapeHtml(args.invoiceUrl)}" style="display:inline-block;margin-top:14px;color:#2563eb;">Télécharger la facture Chariow</a>` : ""}
       </div>
 
       <div class="footer">
-        <p>Si vous avez des questions, contactez-nous à contact@zecleaner.com</p>
-        <p>&copy; 2026 Zecleaner. Tous droits réservés.</p>
+        <p>Si vous avez des questions, contactez-nous à contact@revivo-cleaner.online</p>
+        <p>&copy; 2026 Revivo. Tous droits réservés.</p>
       </div>
     </div>
   </div>

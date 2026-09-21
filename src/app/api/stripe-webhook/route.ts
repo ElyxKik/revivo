@@ -99,7 +99,7 @@ export async function POST(req: NextRequest) {
         seats,
         mode: event.livemode ? "live" : "test",
         amount: Math.round(amountTotal / 100),
-        currency: session.currency || "eur",
+        currency: session.currency || "usd",
         durationYears,
         productType,
         stripeEventId: event.id,

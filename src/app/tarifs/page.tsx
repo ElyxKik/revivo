@@ -8,9 +8,9 @@ const plans = [
   {
     name: "Solo",
     badge: "1 Licence — 2 ans",
-    price: "159€",
+    price: "$159",
     period: "/ 2 ans",
-    subtitle: "Moins de 7€ / mois",
+    subtitle: "Moins de $7 / mois",
     seats: 1,
     duration: "2 ans",
     features: [
@@ -27,9 +27,9 @@ const plans = [
   {
     name: "Famille / Pro",
     badge: "3 Licences — 2 ans",
-    price: "199€",
+    price: "$199",
     period: "/ 2 ans",
-    subtitle: "Économisez 161€",
+    subtitle: "Économisez $161",
     seats: 3,
     duration: "2 ans",
     features: [
@@ -46,9 +46,9 @@ const plans = [
   {
     name: "Solo",
     badge: "1 Licence — 3 ans",
-    price: "249€",
+    price: "$249",
     period: "/ 3 ans",
-    subtitle: "Moins de 7€ / mois",
+    subtitle: "Moins de $7 / mois",
     seats: 1,
     duration: "3 ans",
     features: [
@@ -65,9 +65,9 @@ const plans = [
   {
     name: "Famille / Pro",
     badge: "3 Licences — 3 ans",
-    price: "299€",
+    price: "$299",
     period: "/ 3 ans",
-    subtitle: "Économisez 261€",
+    subtitle: "Économisez $261",
     seats: 3,
     duration: "3 ans",
     features: [

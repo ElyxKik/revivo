@@ -40,7 +40,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ ok: true, message: `Privacy alert email sent to ${email}` });
     }
 
-    await sendLicenseEmail({ to: email, keys, seats, amountEur: body.amountEur });
+    await sendLicenseEmail({ to: email, keys, seats, amount: body.amount ?? body.amountEur, currency: "usd" });
     return NextResponse.json({ ok: true, message: `Email sent to ${email}` });
   } catch (err: any) {
     return NextResponse.json({ error: err?.message || "Failed to send email" }, { status: 500 });

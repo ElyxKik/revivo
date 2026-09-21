@@ -12,7 +12,7 @@ export async function POST(req: NextRequest) {
   const email = body?.customer_details?.email;
   const seats: 1 | 3 = Number(body?.line_items?.[0]?.seats) === 3 ? 3 : 1;
   const amount = Number(body?.line_items?.[0]?.amount_eur) || (seats === 3 ? 120 : 69);
-  const currency = String(body?.currency || "eur");
+  const currency = String(body?.currency || "usd");
 
   if (!email) {
     return NextResponse.json({ error: "Missing customer_details.email" }, { status: 400 });

@@ -49,7 +49,7 @@ export default function StripeSimulatePage() {
           customer_details: { email: parsed.data.email, name: parsed.data.name },
           line_items: [{ seats: parsed.data.seats, amount_eur: amountEur }],
           payment_method_details: { brand: parsed.data.brand, last4: parsed.data.last4 },
-          currency: "eur",
+          currency: "usd",
         }),
       });
 
@@ -198,7 +198,7 @@ export default function StripeSimulatePage() {
 
                         <div className="flex items-center justify-between border-t border-zinc-200 pt-4 dark:border-zinc-800">
                             <span className="text-sm text-zinc-500">Total Due</span>
-                            <span className="text-xl font-bold text-zinc-900 dark:text-zinc-50">{amountEur}€</span>
+                            <span className="text-xl font-bold text-zinc-900 dark:text-zinc-50">${amountEur}</span>
                         </div>
 
                         <button
@@ -217,4 +217,3 @@ export default function StripeSimulatePage() {
     </div>
   );
 }
-

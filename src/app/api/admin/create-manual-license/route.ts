@@ -41,7 +41,7 @@ export async function POST(req: NextRequest) {
         seats,
         product_type: "annual",
         amount: seats === 3 ? 120 : 69,
-        currency: "eur",
+        currency: "usd",
       })
       .select()
       .single();
@@ -73,7 +73,7 @@ export async function POST(req: NextRequest) {
     const { error: licensesError } = await supabase.from("licenses").insert(licenseRows);
     if (licensesError) throw new Error(`Failed to create licenses: ${licensesError.message}`);
 
-    await sendLicenseEmail({ to: email, keys, seats, amountEur: seats === 3 ? 120 : 69 });
+    await sendLicenseEmail({ to: email, keys, seats, amount: seats === 3 ? 120 : 69, currency: "usd" });
 
     return NextResponse.json({ ok: true, purchaseId: purchase.id, licenseCount: seats });
   } catch (err: any) {

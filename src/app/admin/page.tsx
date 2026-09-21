@@ -88,7 +88,7 @@ function formatCurrency(amount?: number, currency?: string) {
   if (amount === undefined) return "-";
   return new Intl.NumberFormat("en-US", {
     style: "currency",
-    currency: currency || "EUR",
+    currency: currency || "USD",
   }).format(amount);
 }
 

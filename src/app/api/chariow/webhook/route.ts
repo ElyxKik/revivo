@@ -72,7 +72,7 @@ export async function POST(req: NextRequest) {
     if (intentError || !intent) return NextResponse.json({ error: "Checkout intent not found" }, { status: 422 });
     const plan = getChariowPlanByProductId(productId);
     const amount = Math.round(Number(valueAt(sale, [["amount", "value"], ["payment", "amount", "value"]]) || 0));
-    const currency = String(valueAt(sale, [["amount", "currency"], ["payment", "amount", "currency"]]) || "eur");
+    const currency = String(valueAt(sale, [["amount", "currency"], ["payment", "amount", "currency"]]) || "usd");
 
     const result = await createPurchaseAndLicenses({
       provider: "chariow",
