@@ -37,7 +37,7 @@ export async function POST(req: NextRequest) {
   try {
     const pulse = JSON.parse(rawBody);
     const event = pulse.event || pulse.trigger || pulse.type;
-    if (!['successful_sale', 'sale.completed'].includes(event)) {
+    if (!["successful.sale", "successful_sale", "sale.completed"].includes(event)) {
       return NextResponse.json({ ok: true, ignored: true, event });
     }
 
