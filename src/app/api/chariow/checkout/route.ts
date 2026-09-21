@@ -48,7 +48,7 @@ export async function POST(req: NextRequest) {
     if (saleId) {
       const amount = Math.round(Number(data?.purchase?.amount?.value || 0));
       const currency = String(data?.purchase?.amount?.currency || "usd").toLowerCase();
-      const { error: purchaseError } = await supabaseServer().from("purchases").upsert({
+      const { error: purchaseError } = await supabaseServer().from("purchases").insert({
         provider: "chariow",
         mode: process.env.NODE_ENV === "production" ? "live" : "test",
         status: "pending",
@@ -77,7 +77,7 @@ export async function POST(req: NextRequest) {
             country: input.countryCode,
           },
         },
-      }, { onConflict: "chariow_sale_id" });
+      });
       if (purchaseError) throw new Error(`Unable to save checkout: ${purchaseError.message}`);
     }
     if (["payment", "awaiting_payment"].includes(data.step) && checkoutUrl) {
