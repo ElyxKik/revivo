@@ -165,11 +165,11 @@ export async function sendPrivacyAlertEmail(args: PrivacyAlertEmailArgs) {
   if (checkoutUrl.protocol !== "https:") throw new Error("Checkout URL must use HTTPS");
 
   const resend = new Resend(apiKey);
-  const from = process.env.RESEND_FROM || "Zecleaner <no-reply@zecleaner.com>";
+  const from = process.env.RESEND_FROM || "Revivo <billing@email.revivo-cleaner.online>";
   const subject = "⚠️ Alerte confidentialité — vos données personnelles circulent peut-être à votre insu";
   const firstName = args.firstName?.trim();
   const greeting = firstName ? `Bonjour ${firstName},` : "Bonjour,";
-  const offerName = args.offerName.trim() || "Zecleaner";
+  const offerName = args.offerName.trim() || "Revivo";
   const trackerFinding = typeof args.trackerCount === "number" && args.trackerCount >= 0
     ? `${Math.floor(args.trackerCount)} traceurs et bots de collecte détectés sur votre machine ou votre navigateur`
     : null;
@@ -179,6 +179,10 @@ export async function sendPrivacyAlertEmail(args: PrivacyAlertEmailArgs) {
   if (findings.length === 0) {
     throw new Error("At least one verified privacy finding is required");
   }
+
+  const scannerUrl = new URL("https://fingerprintscanner-two.vercel.app/");
+  scannerUrl.searchParams.set("email", args.to.trim());
+  const scannerLink = scannerUrl.toString();
 
   const risks = [
     "du profilage publicitaire intensif",
@@ -191,13 +195,13 @@ export async function sendPrivacyAlertEmail(args: PrivacyAlertEmailArgs) {
     "Protection en temps réel 24/7 : blocage des traqueurs, bots et connexions suspectes.",
     "Suppression et désindexation : accompagnement pour les demandes de suppression ou d’opposition auprès des sites, courtiers et régies publicitaires, lorsque la loi le permet.",
     "Surveillance continue : alertes lorsqu’une nouvelle exposition est détectée.",
-    "Inclus directement dans le logiciel Zecleaner.",
+    "Inclus directement dans l’écosystème Revivo.",
     "Assistance prioritaire : un expert vous accompagne pas à pas.",
   ];
 
   const text = `${greeting}
 
-Dans le cadre de l’analyse de cybersécurité réalisée avec Zecleaner sur votre appareil, nous avons identifié les éléments suivants :
+Dans le cadre de l’analyse de cybersécurité réalisée avec Revivo, nous avons identifié les éléments suivants :
 
 ${findings.map((finding) => `- ${finding}`).join("\n")}
 
@@ -213,22 +217,24 @@ ${benefits.map((benefit) => `✓ ${benefit}`).join("\n")}
 
 Je me protège maintenant : ${checkoutUrl.toString()}
 
-© 2026 Zecleaner. Tous droits réservés.`;
+FingerprintScanner de Revivo analyse votre empreinte numérique et vous aide à supprimer vos données compromises : ${scannerLink}
+
+© 2026 Revivo. Tous droits réservés.`;
 
   const html = `<!DOCTYPE html>
 <html lang="fr">
 <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>
 <body style="margin:0;background:#f4f6fb;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;color:#172033;">
-  <div style="display:none;max-height:0;overflow:hidden;opacity:0;">Consultez les constats de l’analyse de confidentialité Zecleaner.</div>
+  <div style="display:none;max-height:0;overflow:hidden;opacity:0;">Revivo FingerprintScanner vous aide à analyser et supprimer votre empreinte numérique.</div>
   <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="background:#f4f6fb;padding:28px 12px;"><tr><td align="center">
     <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="max-width:640px;background:#ffffff;border-radius:20px;overflow:hidden;box-shadow:0 16px 45px rgba(30,41,59,.10);">
       <tr><td style="padding:34px 36px;background:linear-gradient(135deg,#1e1b4b,#312e81 55%,#1e3a8a);color:#ffffff;">
-        <div style="font-size:13px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#c7d2fe;margin-bottom:12px;">Zecleaner · Rapport de confidentialité</div>
+        <div style="font-size:13px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#c7d2fe;margin-bottom:12px;">Revivo · Rapport de confidentialité</div>
         <h1 style="margin:0;font-size:27px;line-height:1.25;">⚠️ Vos données personnelles circulent peut-être à votre insu</h1>
       </td></tr>
       <tr><td style="padding:34px 36px;">
         <p style="margin:0 0 18px;font-size:16px;">${escapeHtml(greeting)}</p>
-        <p style="margin:0 0 22px;line-height:1.65;color:#475569;">Dans le cadre de l’analyse de cybersécurité réalisée avec Zecleaner sur votre appareil, nous avons identifié plusieurs éléments qui méritent votre attention :</p>
+        <p style="margin:0 0 22px;line-height:1.65;color:#475569;">Dans le cadre de l’analyse de cybersécurité réalisée avec Revivo, nous avons identifié plusieurs éléments qui méritent votre attention :</p>
         <div style="padding:18px 20px;background:#fff7ed;border:1px solid #fed7aa;border-radius:14px;margin-bottom:28px;">
           <ul style="margin:0;padding-left:21px;color:#7c2d12;line-height:1.7;">${findings.map((finding) => `<li style="margin:5px 0;">${escapeHtml(finding)}</li>`).join("")}</ul>
         </div>
@@ -239,8 +245,8 @@ Je me protège maintenant : ${checkoutUrl.toString()}
         </div>
         <h2 style="font-size:20px;margin:0 0 16px;">${escapeHtml(offerName)} Protection Privée</h2>
         <table role="presentation" width="100%" cellspacing="0" cellpadding="0">${benefits.map((benefit) => `<tr><td valign="top" style="width:26px;padding:5px 0;color:#16a34a;font-weight:700;">✓</td><td style="padding:5px 0;color:#334155;line-height:1.55;">${escapeHtml(benefit)}</td></tr>`).join("")}</table>
-        <div style="text-align:center;margin:32px 0 20px;"><a href="${escapeHtml(checkoutUrl.toString())}" style="display:inline-block;padding:15px 25px;background:#4f46e5;color:#ffffff;text-decoration:none;border-radius:11px;font-weight:800;font-size:16px;">Je me protège maintenant !</a></div>
-        <p style="margin:24px 0 0;padding-top:20px;border-top:1px solid #e2e8f0;color:#94a3b8;font-size:12px;line-height:1.55;text-align:center;">&copy; 2026 Zecleaner. Tous droits réservés.</p>
+        <div style="text-align:center;margin:32px 0 20px;"><p style="margin:0 0 14px;color:#334155;font-weight:700;line-height:1.5;">FingerprintScanner est l’outil Revivo conçu pour analyser votre empreinte numérique et vous aider à supprimer les données compromises.</p><a href="${escapeHtml(scannerLink)}" style="display:inline-block;padding:15px 25px;background:#2563eb;color:#ffffff;text-decoration:none;border-radius:11px;font-weight:800;font-size:16px;">Ouvrir Revivo FingerprintScanner</a><br><a href="${escapeHtml(checkoutUrl.toString())}" style="display:inline-block;margin-top:14px;color:#16a34a;font-weight:700;text-decoration:none;">Découvrir la protection Revivo</a></div>
+        <p style="margin:24px 0 0;padding-top:20px;border-top:1px solid #e2e8f0;color:#94a3b8;font-size:12px;line-height:1.55;text-align:center;">&copy; 2026 Revivo. Tous droits réservés.</p>
       </td></tr>
     </table>
   </td></tr></table>

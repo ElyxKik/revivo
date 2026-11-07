@@ -34,8 +34,8 @@ export async function POST(req: NextRequest) {
         firstName: typeof body.firstName === "string" ? body.firstName : undefined,
         trackerCount: typeof body.trackerCount === "number" ? body.trackerCount : undefined,
         verifiedFindings,
-        offerName: "Zecleaner",
-        checkoutUrl: "https://zecleaner.com/internet-protector.html#offres",
+        offerName: "Revivo",
+        checkoutUrl: "https://revivo-cleaner.online/tarifs.html",
       });
       return NextResponse.json({ ok: true, message: `Privacy alert email sent to ${email}` });
     }
